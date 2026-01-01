@@ -12,7 +12,11 @@ const myCache = new NodeCache({ stdTTL: 100 });
 // Заміни на це:
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret'; 
 
-app.use(cors({ origin: 'snake-pearl-rho.vercel.app', credentials: true })); 
+app.use(cors({ 
+    // Заміни адресу нижче на ту, що на твоєму скриншоті консолі
+    origin: 'https://snake-pearl-rho.vercel.app', 
+    credentials: true 
+}));
 app.use(express.json()); 
 app.use(cookieParser()); 
 
