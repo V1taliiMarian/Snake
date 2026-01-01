@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('http://localhost:5000/me', {
+        const res = await fetch('https://snake-4tdl.onrender.com/me', {
           method: 'GET',
           credentials: 'include' // ВАЖЛИВО: дозволяє відправити куки на сервер
         });
@@ -31,7 +31,7 @@ function App() {
   }, []);
 
   const handleLogout = async () => {
-    await fetch('http://localhost:5000/logout', { method: 'POST', credentials: 'include' });
+    await fetch('https://snake-4tdl.onrender.com/logout', { method: 'POST', credentials: 'include' });
     setUser(null);
   };
 

@@ -14,7 +14,7 @@ const SnakeGame = () => {
 
   const fetchBoard = async () => {
     try {
-      const res = await fetch('http://localhost:5000/leaderboard');
+      const res = await fetch('https://snake-4tdl.onrender.com/leaderboard');
       setLeaderboard(await res.json());
     } catch (e) { console.error("Помилка завантаження рейтингу", e); }
   };
@@ -25,7 +25,7 @@ const SnakeGame = () => {
 
   useEffect(() => {
     if (gameOver && score > 0) {
-      fetch('http://localhost:5000/score', {
+      fetch('https://snake-4tdl.onrender.com/score', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ score }),

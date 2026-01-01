@@ -8,7 +8,7 @@ const Auth = ({ onLoginSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isRegister ? '/register' : '/login';
-    const response = await fetch(`http://localhost:5000${endpoint}`, {
+    const response = await fetch(`https://snake-4tdl.onrender.com${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),

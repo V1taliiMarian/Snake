@@ -12,7 +12,7 @@ const myCache = new NodeCache({ stdTTL: 100 });
 // Заміни на це:
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret'; 
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true })); 
+app.use(cors({ origin: 'snake-pearl-rho.vercel.app', credentials: true })); 
 app.use(express.json()); 
 app.use(cookieParser()); 
 
@@ -40,7 +40,12 @@ app.post('/login', async (req, res) => {
             const validPassword = await bcrypt.compare(password, user.rows[0].password_hash);
             if (validPassword) {
                 const token = jwt.sign({ userId: user.rows[0].id, name: username }, JWT_SECRET);
-                res.cookie('token', token, { httpOnly: true, maxAge: 3600000, sameSite: 'lax' }); 
+                res.cookie('token', token, { 
+                httpOnly: true, 
+                sameSite: 'none', // Для роботи між різними доменами
+                secure: true      // Обов'язково для HTTPS
+            });
+            
                 return res.json({ message: 'Вхід успішний!', username });
             }
         }
