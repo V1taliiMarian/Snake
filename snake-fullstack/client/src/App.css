@@ -1,0 +1,250 @@
+/* 1. Фон та загальні стилі */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #f1f5f9, #ffffff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  font-family: 'Poppins', sans-serif;
+  color: #1e293b;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 28px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+}
+
+/* 2. Ігрове поле - чіткі межі */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(20, 20px);
+  grid-template-rows: repeat(20, 20px);
+  background-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* 3. Клітинки змійки - МИТТЄВА ПЕРЕМАЛЬОВКА (НЕОН) */
+.snake-cell {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: none !important; /* Жодних плавних рухів, тільки різкі кроки */
+}
+
+/* 5. Сучасні інпути для авторизації */
+.glass-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #1e293b;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.glass-input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.15);
+  background: #ffffff;
+}
+
+/* 6. Кнопки з градієнтом */
+.modern-button {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+}
+
+.modern-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+}
+
+.modern-button:active {
+  transform: translateY(0);
+}
+
+/* 4. Слайдер швидкості */
+.speed-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 5. Підказка керування */
+.controls-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  color: #64748b;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.controls-hint b {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 9. Перемикач входу/реєстрації */
+.auth-toggle {
+  margin-top: 20px;
+  color: #94a3b8;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.auth-toggle span {
+  color: #16a34a;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.auth-toggle span:hover {
+  text-decoration: underline;
+}
+
+/* 10. Анімація Game Over */
+@keyframes pulseRed {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.game-over-text {
+  color: #ef4444;
+  font-weight: bold;
+  animation: pulseRed 1s infinite;
+}
+
+.neon-head {
+  background-color: #4ade80 !important;
+  box-shadow: 0 0 15px #22c55e;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.neon-body {
+  background-color: #16a34a !important;
+  box-shadow: 0 0 8px rgba(22, 163, 74, 0.4);
+  border-radius: 4px;
+}
+
+.neon-food {
+  background-color: #ef4444 !important;
+  box-shadow: 0 0 15px #ef4444;
+  border-radius: 4px;
+}
+
+/* 1. Налаштування фонового контейнера */
+.background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Завжди позаду всього */
+  overflow: hidden;
+  background: #f8fafc; /* Основний світлий колір */
+}
+
+/* 2. Стилі для плаваючих плям */
+.blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%);
+  filter: blur(80px); /* Розмиття для м'якості */
+  border-radius: 50%;
+  z-index: -1;
+  animation: float 20s infinite alternate ease-in-out;
+  pointer-events: none; /* Щоб плями не заважали клікам */
+}
+
+.blob-1 {
+  top: -100px;
+  right: -100px;
+  background: rgba(34, 197, 94, 0.15);
+  animation-duration: 25s;
+}
+
+.blob-2 {
+  bottom: -150px;
+  left: -100px;
+  background: rgba(239, 68, 68, 0.08); /* Легкий червоний акцент */
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.blob-3 {
+  top: 40%;
+  left: 30%;
+  width: 300px;
+  height: 300px;
+  background: rgba(59, 130, 246, 0.1); /* Блакитний відблиск */
+  animation-duration: 18s;
+  animation-delay: -2s;
+}
+
+/* 3. Анімація плавного руху */
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}

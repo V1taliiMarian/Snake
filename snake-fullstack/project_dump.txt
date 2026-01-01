@@ -1,0 +1,838 @@
+﻿
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\public\index.html ---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\App.css ---
+
+/* 1. Р¤РѕРЅ С‚Р° Р·Р°РіР°Р»СЊРЅС– СЃС‚РёР»С– */
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #f1f5f9, #ffffff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  font-family: 'Poppins', sans-serif;
+  color: #1e293b;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 28px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  padding: 30px;
+}
+
+/* 2. Р†РіСЂРѕРІРµ РїРѕР»Рµ - С‡С–С‚РєС– РјРµР¶С– */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(20, 20px);
+  grid-template-rows: repeat(20, 20px);
+  background-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+/* 3. РљР»С–С‚РёРЅРєРё Р·РјС–Р№РєРё - РњРРўРўР„Р’Рђ РџР•Р Р•РњРђР›Р¬РћР’РљРђ (РќР•РћРќ) */
+.snake-cell {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: none !important; /* Р–РѕРґРЅРёС… РїР»Р°РІРЅРёС… СЂСѓС…С–РІ, С‚С–Р»СЊРєРё СЂС–Р·РєС– РєСЂРѕРєРё */
+}
+
+/* 5. РЎСѓС‡Р°СЃРЅС– С–РЅРїСѓС‚Рё РґР»СЏ Р°РІС‚РѕСЂРёР·Р°С†С–С— */
+.glass-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #1e293b;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.glass-input:focus {
+  border-color: #22c55e;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.15);
+  background: #ffffff;
+}
+
+/* 6. РљРЅРѕРїРєРё Р· РіСЂР°РґС–С”РЅС‚РѕРј */
+.modern-button {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2);
+}
+
+.modern-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(22, 163, 74, 0.3);
+}
+
+.modern-button:active {
+  transform: translateY(0);
+}
+
+/* 4. РЎР»Р°Р№РґРµСЂ С€РІРёРґРєРѕСЃС‚С– */
+.speed-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+}
+
+.speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 5. РџС–РґРєР°Р·РєР° РєРµСЂСѓРІР°РЅРЅСЏ */
+.controls-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  padding: 15px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  color: #64748b;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+}
+
+.controls-hint b {
+  color: #16a34a;
+  background: rgba(22, 163, 74, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 9. РџРµСЂРµРјРёРєР°С‡ РІС…РѕРґСѓ/СЂРµС”СЃС‚СЂР°С†С–С— */
+.auth-toggle {
+  margin-top: 20px;
+  color: #94a3b8;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.auth-toggle span {
+  color: #16a34a;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.auth-toggle span:hover {
+  text-decoration: underline;
+}
+
+/* 10. РђРЅС–РјР°С†С–СЏ Game Over */
+@keyframes pulseRed {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.game-over-text {
+  color: #ef4444;
+  font-weight: bold;
+  animation: pulseRed 1s infinite;
+}
+
+.neon-head {
+  background-color: #4ade80 !important;
+  box-shadow: 0 0 15px #22c55e;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.neon-body {
+  background-color: #16a34a !important;
+  box-shadow: 0 0 8px rgba(22, 163, 74, 0.4);
+  border-radius: 4px;
+}
+
+.neon-food {
+  background-color: #ef4444 !important;
+  box-shadow: 0 0 15px #ef4444;
+  border-radius: 4px;
+}
+
+/* 1. РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ С„РѕРЅРѕРІРѕРіРѕ РєРѕРЅС‚РµР№РЅРµСЂР° */
+.background-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Р—Р°РІР¶РґРё РїРѕР·Р°РґСѓ РІСЃСЊРѕРіРѕ */
+  overflow: hidden;
+  background: #f8fafc; /* РћСЃРЅРѕРІРЅРёР№ СЃРІС–С‚Р»РёР№ РєРѕР»С–СЂ */
+}
+
+/* 2. РЎС‚РёР»С– РґР»СЏ РїР»Р°РІР°СЋС‡РёС… РїР»СЏРј */
+.blob {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%);
+  filter: blur(80px); /* Р РѕР·РјРёС‚С‚СЏ РґР»СЏ Рј'СЏРєРѕСЃС‚С– */
+  border-radius: 50%;
+  z-index: -1;
+  animation: float 20s infinite alternate ease-in-out;
+  pointer-events: none; /* Р©РѕР± РїР»СЏРјРё РЅРµ Р·Р°РІР°Р¶Р°Р»Рё РєР»С–РєР°Рј */
+}
+
+.blob-1 {
+  top: -100px;
+  right: -100px;
+  background: rgba(34, 197, 94, 0.15);
+  animation-duration: 25s;
+}
+
+.blob-2 {
+  bottom: -150px;
+  left: -100px;
+  background: rgba(239, 68, 68, 0.08); /* Р›РµРіРєРёР№ С‡РµСЂРІРѕРЅРёР№ Р°РєС†РµРЅС‚ */
+  animation-duration: 30s;
+  animation-delay: -5s;
+}
+
+.blob-3 {
+  top: 40%;
+  left: 30%;
+  width: 300px;
+  height: 300px;
+  background: rgba(59, 130, 246, 0.1); /* Р‘Р»Р°РєРёС‚РЅРёР№ РІС–РґР±Р»РёСЃРє */
+  animation-duration: 18s;
+  animation-delay: -2s;
+}
+
+/* 3. РђРЅС–РјР°С†С–СЏ РїР»Р°РІРЅРѕРіРѕ СЂСѓС…Сѓ */
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\App.js ---
+
+import React, { useState, useEffect } from 'react';
+import SnakeGame from './SnakeGame';
+import Auth from './Auth';
+import './App.css';
+
+function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Р”РѕРґР°С”РјРѕ СЃС‚Р°РЅ Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ
+
+  // РџР•Р Р•Р’Р†Р РљРђ РџР Р РџР•Р Р•Р—РђР’РђРќРўРђР–Р•РќРќР†
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/me', {
+          method: 'GET',
+          credentials: 'include' // Р’РђР–Р›РР’Рћ: РґРѕР·РІРѕР»СЏС” РІС–РґРїСЂР°РІРёС‚Рё РєСѓРєРё РЅР° СЃРµСЂРІРµСЂ
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.username); // РЇРєС‰Рѕ СЃРµСЂРІРµСЂ РїС–РґС‚РІРµСЂРґРёРІ РєСѓРєСѓ, Р»РѕРіС–РЅРёРјРѕ СЋР·РµСЂР°
+        }
+      } catch (err) {
+        console.error("РџРѕРјРёР»РєР° Р°РІС‚РѕР»РѕРіС–РЅСѓ", err);
+      } finally {
+        setLoading(false); // Р—Р°РІРµСЂС€СѓС”РјРѕ РїРµСЂРµРІС–СЂРєСѓ
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    await fetch('http://localhost:5000/logout', { method: 'POST', credentials: 'include' });
+    setUser(null);
+  };
+
+  // РџРѕРєРё РјРё С‡РµРєР°С”РјРѕ РІС–РґРїРѕРІС–РґС– РІС–Рґ СЃРµСЂРІРµСЂР°, РєСЂР°С‰Рµ РЅС–С‡РѕРіРѕ РЅРµ РїРѕРєР°Р·СѓРІР°С‚Рё (Р°Р±Рѕ СЃРїС–РЅРµСЂ)
+  if (loading) return <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Р—Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ СЃРµСЃС–С—...</div>;
+
+  return (
+    <div className="App">
+      {/* Р¤РћРќРћР’Рђ РђРќР†РњРђР¦Р†РЇ */}
+      <div className="background-wrapper">
+        <div className="blob blob-1"></div>
+        <div className="blob blob-2"></div>
+        <div className="blob blob-3"></div>
+      </div>
+      <header style={{ padding: '20px', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+        <h2 style={{ margin: 0 }}>рџђЌ SNAKE<span style={{color: '#22c55e'}}>0001</span></h2>
+        {user && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span>РџСЂРёРІС–С‚, <strong style={{color: '#22c55e'}}>{user}</strong></span>
+            <button className="modern-button" style={{ background: '#ef4444', padding: '8px 15px' }} onClick={handleLogout}>Р’РёР№С‚Рё</button>
+          </div>
+        )}
+      </header>
+
+      <main style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        {!user ? (
+          <div className="glass-card">
+            <Auth onLoginSuccess={setUser} />
+          </div>
+        ) : (
+          <SnakeGame />
+        )}
+      </main>
+    </div>
+  );
+}
+
+export default App;
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\App.test.js ---
+
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\Auth.js ---
+
+import React, { useState } from 'react';
+
+const Auth = ({ onLoginSuccess }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const endpoint = isRegister ? '/register' : '/login';
+    const response = await fetch(`http://localhost:5000${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+      credentials: 'include',
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      if (isRegister) {
+        alert('РђРєР°СѓРЅС‚ СЃС‚РІРѕСЂРµРЅРѕ! РњРѕР¶РЅР° РІС…РѕРґРёС‚Рё.');
+        setIsRegister(false);
+      } else {
+        onLoginSuccess(data.username);
+      }
+    } else {
+      alert(data.error);
+    }
+  };
+
+  return (
+    <div style={{ textAlign: 'center', width: '320px' }}>
+      <h2 style={{ fontSize: '24px', marginBottom: '25px', fontWeight: '500' }}>
+        {isRegister ? 'РЎС‚РІРѕСЂРёС‚Рё Р°РєР°СѓРЅС‚' : 'Р’С…С–Рґ Сѓ СЃРёСЃС‚РµРјСѓ'}
+      </h2>
+      
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <input 
+          className="glass-input"
+          type="text" 
+          placeholder="Р›РѕРіС–РЅ" 
+          value={username}
+          onChange={e => setUsername(e.target.value)} 
+          required 
+        />
+        <input 
+          className="glass-input"
+          type="password" 
+          placeholder="РџР°СЂРѕР»СЊ" 
+          value={password}
+          onChange={e => setPassword(e.target.value)} 
+          required 
+        />
+        
+        <button className="modern-button" style={{ marginTop: '10px' }}>
+          {isRegister ? 'Р—Р°СЂРµС”СЃС‚СЂСѓРІР°С‚РёСЃСЏ' : 'РЈРІС–Р№С‚Рё'}
+        </button>
+      </form>
+
+      <div className="auth-toggle" onClick={() => setIsRegister(!isRegister)}>
+        {isRegister ? 'Р’Р¶Рµ РјР°С”С‚Рµ Р°РєР°СѓРЅС‚?' : 'РќРµРјР°С” Р°РєР°СѓРЅС‚Р°?'}
+        <span>{isRegister ? 'РЈРІС–Р№С‚Рё' : 'РЎС‚РІРѕСЂРёС‚Рё'}</span>
+      </div>
+    </div>
+  );
+};
+
+export default Auth;
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\index.css ---
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\index.js ---
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\reportWebVitals.js ---
+
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\setupTests.js ---
+
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\client\src\SnakeGame.js ---
+
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+
+const SnakeGame = () => {
+  const [snake, setSnake] = useState([{ x: 10, y: 10 }]);
+  const [food, setFood] = useState({ x: 5, y: 5 });
+  const [gameOver, setGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false); // РќРѕРІРёР№ СЃС‚Р°РЅ РґР»СЏ РѕС‡С–РєСѓРІР°РЅРЅСЏ СЃС‚Р°СЂС‚Сѓ
+  const [score, setScore] = useState(0);
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [speed, setSpeed] = useState(130);
+
+  const directionRef = useRef({ x: 0, y: -1 });
+  const lastProcessedDir = useRef({ x: 0, y: -1 });
+
+  const fetchBoard = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/leaderboard');
+      setLeaderboard(await res.json());
+    } catch (e) { console.error("РџРѕРјРёР»РєР° Р·Р°РІР°РЅС‚Р°Р¶РµРЅРЅСЏ СЂРµР№С‚РёРЅРіСѓ", e); }
+  };
+
+  useEffect(() => {
+    fetchBoard();
+  }, []);
+
+  useEffect(() => {
+    if (gameOver && score > 0) {
+      fetch('http://localhost:5000/score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score }),
+        credentials: 'include',
+      }).then(fetchBoard);
+    }
+  }, [gameOver]);
+
+  const moveSnake = useCallback(() => {
+    // Р—РјС–Р№РєР° РЅРµ СЂСѓС…Р°С”С‚СЊСЃСЏ, СЏРєС‰Рѕ РіСЂР° Р·Р°РєС–РЅС‡РµРЅР° РђР‘Рћ С‰Рµ РЅРµ РїРѕС‡Р°Р»Р°СЃСЏ
+    if (gameOver || !gameStarted) return;
+
+    let nextX = snake[0].x + directionRef.current.x;
+    let nextY = snake[0].y + directionRef.current.y;
+
+    nextX = (nextX + 20) % 20;
+    nextY = (nextY + 20) % 20;
+
+    const head = { x: nextX, y: nextY };
+
+    if (snake.some((segment) => segment.x === head.x && segment.y === head.y)) {
+      setGameOver(true);
+      return;
+    }
+
+    const newSnake = [head, ...snake];
+    lastProcessedDir.current = directionRef.current;
+
+    if (head.x === food.x && head.y === food.y) {
+      setScore(s => s + 1);
+      setFood({ x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) });
+    } else {
+      newSnake.pop();
+    }
+    setSnake(newSnake);
+  }, [snake, food, gameOver, gameStarted]);
+
+  useEffect(() => {
+    const timer = setInterval(moveSnake, speed);
+    return () => clearInterval(timer);
+  }, [moveSnake, speed]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Р›РѕРіС–РєР° РґР»СЏ РџСЂРѕР±С–Р»Сѓ
+      if (e.code === 'Space') {
+        if (gameOver) {
+          // РЇРєС‰Рѕ РіСЂР° Р·Р°РєС–РЅС‡РµРЅР° вЂ” СЃРєРёРґР°С”РјРѕ РІСЃРµ С– СЃС‚Р°СЂС‚СѓС”РјРѕ
+          setSnake([{ x: 10, y: 10 }]);
+          setScore(0);
+          setGameOver(false);
+          setGameStarted(true);
+          directionRef.current = { x: 0, y: -1 };
+        } else if (!gameStarted) {
+          // РЇРєС‰Рѕ РіСЂР° С‰Рµ РЅРµ РїРѕС‡Р°Р»Р°СЃСЏ вЂ” РїСЂРѕСЃС‚Рѕ СЃС‚Р°СЂС‚СѓС”РјРѕ
+          setGameStarted(true);
+        }
+        return;
+      }
+
+      const code = e.code;
+      const newDir = { ...directionRef.current };
+
+      if ((code === 'ArrowUp' || code === 'KeyW') && lastProcessedDir.current.y === 0) {
+        newDir.x = 0; newDir.y = -1;
+      } else if ((code === 'ArrowDown' || code === 'KeyS') && lastProcessedDir.current.y === 0) {
+        newDir.x = 0; newDir.y = 1;
+      } else if ((code === 'ArrowLeft' || code === 'KeyA') && lastProcessedDir.current.x === 0) {
+        newDir.x = -1; newDir.y = 0;
+      } else if ((code === 'ArrowRight' || code === 'KeyD') && lastProcessedDir.current.x === 0) {
+        newDir.x = 1; newDir.y = 0;
+      }
+      directionRef.current = newDir;
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [gameOver, gameStarted]);
+
+  return (
+    <div style={{ display: 'flex', gap: '40px', justifyContent: 'center', padding: '20px' }}>
+      <div className="glass-card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+          <h2 style={{ margin: 0 }}>Score: <span style={{ color: '#22c55e' }}>{score}</span></h2>
+          <div style={{ width: '100px' }}>
+            <input type="range" min="50" max="250" step="10" value={speed} 
+              onChange={(e) => setSpeed(Number(e.target.value))} className="speed-slider" style={{ direction: 'rtl' }} />
+          </div>
+        </div>
+
+        {/* РџРѕРІС–РґРѕРјР»РµРЅРЅСЏ РґР»СЏ РіСЂР°РІС†СЏ */}
+        <div style={{ height: '30px', marginBottom: '10px' }}>
+          {gameOver ? (
+            <h3 className="game-over-text" style={{ margin: 0 }}>РљР†РќР•Р¦Р¬ Р“Р Р! [Space РґР»СЏ СЂРµСЃС‚Р°СЂС‚Сѓ]</h3>
+          ) : !gameStarted ? (
+            <h3 style={{ margin: 0, color: '#16a34a' }}>Р“РћРўРћР’Р†? [РќР°С‚РёСЃРЅС–С‚СЊ РџСЂРѕР±С–Р»]</h3>
+          ) : null}
+        </div>
+        
+        <div className="game-grid">
+          {Array.from({ length: 400 }).map((_, i) => {
+            const x = i % 20, y = Math.floor(i / 20);
+            const isHead = snake[0].x === x && snake[0].y === y;
+            const isBody = snake.some(s => s.x === x && s.y === y);
+            const isFood = food.x === x && food.y === y;
+            const showBow = isHead && snake.length >= 2;
+
+            let cellClass = "snake-cell";
+            if (isHead) cellClass += " neon-head";
+            else if (isBody) cellClass += " neon-body";
+            else if (isFood) cellClass += " neon-food";
+
+            return (
+              <div key={i} className={cellClass}>
+                {showBow && <span style={{ fontSize: '14px', zIndex: 10 }}>рџЋЂ</span>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="glass-card" style={{ minWidth: '220px' }}>
+        <h3 style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: '10px', marginTop: 0 }}>рџЏ† РўРћРџ-10</h3>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <tbody>
+            {leaderboard.map((entry, i) => (
+              <tr key={i} style={{ background: i === 0 ? 'rgba(34, 197, 94, 0.05)' : 'transparent' }}>
+                <td style={{ padding: '8px 5px', fontSize: '14px' }}>{i + 1}. {entry.username}</td>
+                <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#16a34a' }}>{entry.score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="controls-hint">
+        <div>рџЋ® РљРµСЂСѓРІР°РЅРЅСЏ: <b>W A S D</b> Р°Р±Рѕ <b>РЎС‚СЂС–Р»РєРё</b></div>
+        <div>рџ”„ РЎС‚Р°СЂС‚/Р РµСЃС‚Р°СЂС‚: <b>Space</b> (РџСЂРѕР±С–Р»)</div>
+        <div style={{marginTop: '5px', fontSize: '11px'}}>вњЁ Р РµР¶РёРј: <b>Р‘РµР· РєРѕСЂРґРѕРЅС–РІ</b></div>
+      </div>
+    </div>
+  );
+};
+
+export default SnakeGame;
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\server\db.js ---
+
+const { Pool } = require('pg');
+require('dotenv').config();
+
+const pool = new Pool({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
+// РўРµСЃС‚СѓС”РјРѕ РїС–РґРєР»СЋС‡РµРЅРЅСЏ
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('РџРѕРјРёР»РєР° РїС–РґРєР»СЋС‡РµРЅРЅСЏ РґРѕ Р±Р°Р·Рё:', err.stack);
+  } else {
+    console.log('РЈСЃРїС–С€РЅРѕ РїС–РґРєР»СЋС‡РµРЅРѕ РґРѕ PostgreSQL:', res.rows[0].now);
+  }
+});
+
+module.exports = pool;
+
+
+--- FILE: D:\Projects\Snake\snake-fullstack\server\index.js ---
+
+const express = require('express');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const NodeCache = require('node-cache');
+const pool = require('./db');
+const bcrypt = require('bcrypt');
+
+const app = express();
+const myCache = new NodeCache({ stdTTL: 100 }); 
+const JWT_SECRET = 'super_secret_key_123'; 
+
+app.use(cors({ origin: 'http://localhost:3000', credentials: true })); 
+app.use(express.json()); 
+app.use(cookieParser()); 
+
+// --- Р Р•Р„РЎРўР РђР¦Р†РЇ ---
+app.post('/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = await pool.query(
+            'INSERT INTO users (username, password_hash) VALUES ($1, $2) RETURNING *',
+            [username, hashedPassword]
+        );
+        res.json({ message: 'РљРѕСЂРёСЃС‚СѓРІР°С‡ СЃС‚РІРѕСЂРµРЅРёР№!', username: newUser.rows[0].username });
+    } catch (err) {
+        res.status(500).json({ error: 'Р›РѕРіС–РЅ РІР¶Рµ Р·Р°Р№РЅСЏС‚РёР№' });
+    }
+});
+
+// --- Р’РҐР†Р” ---
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    try {
+        const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        if (user.rows.length > 0) {
+            const validPassword = await bcrypt.compare(password, user.rows[0].password_hash);
+            if (validPassword) {
+                const token = jwt.sign({ userId: user.rows[0].id, name: username }, JWT_SECRET);
+                res.cookie('token', token, { httpOnly: true, maxAge: 3600000, sameSite: 'lax' }); 
+                return res.json({ message: 'Р’С…С–Рґ СѓСЃРїС–С€РЅРёР№!', username });
+            }
+        }
+        res.status(401).json({ error: 'РќРµРІС–СЂРЅС– РґР°РЅС–' });
+    } catch (err) {
+        res.status(500).json({ error: 'РџРѕРјРёР»РєР° СЃРµСЂРІРµСЂР°' });
+    }
+});
+
+// --- Р’РРҐР†Р” (РћС‡РёС‰РµРЅРЅСЏ РєСѓРєС–РІ) ---
+app.post('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Р’Рё РІРёР№С€Р»Рё' });
+});
+
+// --- Р—Р‘Р•Р Р•Р–Р•РќРќРЇ Р Р•Р—РЈР›Р¬РўРђРўРЈ ---
+app.post('/score', async (req, res) => {
+    const { score } = req.body;
+    const token = req.cookies.token; 
+    if (!token) return res.status(401).json({ error: 'РўСЂРµР±Р° Р·Р°Р»РѕРіС–РЅРёС‚РёСЃСЊ' });
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        await pool.query('INSERT INTO scores (user_id, score) VALUES ($1, $2)', [decoded.userId, score]);
+        myCache.del('top_scores'); // РћС‡РёС‰СѓС”РјРѕ РєРµС€ СЂРµР№С‚РёРЅРіСѓ
+        res.json({ message: 'Р РµРєРѕСЂРґ Р·Р±РµСЂРµР¶РµРЅРѕ!' });
+    } catch (err) {
+        res.status(401).json({ error: 'РќРµРґС–Р№СЃРЅРёР№ С‚РѕРєРµРЅ' });
+    }
+});
+
+// --- Р Р•Р™РўРРќР“ (Р¤Р†РљРЎ РџРћР’РўРћР Р•РќР¬) ---
+app.get('/leaderboard', async (req, res) => {
+    const cachedData = myCache.get('top_scores');
+    if (cachedData) return res.json(cachedData);
+
+    try {
+        // GROUP BY РіР°СЂР°РЅС‚СѓС”, С‰Рѕ РєРѕР¶РЅРµ С–Рј'СЏ Р±СѓРґРµ РІ СЃРїРёСЃРєСѓ Р»РёС€Рµ РћР”РРќ СЂР°Р· С–Р· РЅР°Р№РєСЂР°С‰РёРј СЂРµР·СѓР»СЊС‚Р°С‚РѕРј
+        const result = await pool.query(`
+            SELECT u.username, MAX(s.score) as score 
+            FROM scores s 
+            JOIN users u ON s.user_id = u.id 
+            GROUP BY u.username 
+            ORDER BY score DESC 
+            LIMIT 10
+        `);
+        myCache.set('top_scores', result.rows);
+        res.json(result.rows);
+    } catch (err) { res.status(500).json({ error: 'РџРѕРјРёР»РєР° Р±Р°Р·Рё' }); }
+});
+
+// --- РџР•Р Р•Р’Р†Р РљРђ РЎР•РЎР†Р‡ (РђРІС‚РѕР»РѕРіС–РЅ) ---
+app.get('/me', (req, res) => {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ error: 'РќРµРјР°С” СЃРµСЃС–С—' });
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        // РЇРєС‰Рѕ С‚РѕРєРµРЅ РІР°Р»С–РґРЅРёР№, РїРѕРІРµСЂС‚Р°С”РјРѕ С–Рј'СЏ РєРѕСЂРёСЃС‚СѓРІР°С‡Р°
+        res.json({ username: decoded.name });
+    } catch (err) {
+        res.status(401).json({ error: 'РЎРµСЃС–СЏ Р·Р°СЃС‚Р°СЂС–Р»Р°' });
+    }
+}); 
+
+app.listen(5000, () => console.log('Server started on port 5000'));
